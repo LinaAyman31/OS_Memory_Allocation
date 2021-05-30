@@ -2,6 +2,15 @@
 #include "ui_mainwindow.h"
 
 QStringList row_labels;
+
+typedef struct{
+    int id;
+    QString name ;
+    double starting_address ;
+    double size ;
+    int type  ;
+}segment ;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
