@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets>
+#include <QMessageBox>
 
 int new_row = 0;
 struct segment {
@@ -154,9 +155,20 @@ void MainWindow::add_memory_size_button_clicked() {
 
 void MainWindow::submit_holes_button_clicked() {
     QString memory_size = lineEdit_for_memory_size ->text();
+    if(memory_size.toInt()<=0){
+        QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
+    }
+    int total_size=0;
     for(int i=0;i<holes_table->rowCount();i++){
         QString starting_address = holes_table->item(i, 0)->text();
         QString size = holes_table->item(i, 1)->text();
+        total_size+= size.toInt();
+        if(size.toInt()<=0 || starting_address.toInt() <=0){
+            QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
+        }
+        if(total_size > memory_size.toInt() ){
+             QMessageBox::warning(this, "Wrong Input", "holes size exceeds the memory size");
+        }
     }
 
 }
@@ -180,11 +192,17 @@ void MainWindow::allocate_process_button_clicked() {
     for(int i=0;i<process_table->rowCount();i++){
         QString name = process_table->item(i, 0)->text();
         QString size = process_table->item(i, 1)->text();
+        if(size.toInt()<=0){
+            QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
+        }
     }
 }
 
 void MainWindow::dellocate_process_button_clicked() {
 QString deallocate_process = lineEdit_for_process_number ->text();
+if(deallocate_process.toInt()<=0){
+    QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
+}
 }
 
 void MainWindow::first_fit_algorithm(){
