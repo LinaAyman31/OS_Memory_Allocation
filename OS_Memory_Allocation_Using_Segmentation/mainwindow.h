@@ -19,6 +19,14 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void connect_buttons_function();
+
+private slots:
+    void add_memory_size_button_clicked();
+    void submit_holes_button_clicked();
+    void add_hole_button_clicked();
+    void enter_segments_button_clicked();
+    void allocate_process__button_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -42,5 +50,7 @@ private:
     QLabel *label_for_process_number;
     QLineEdit *lineEdit_for_process_number;
     QPushButton *enter_process_number;
+    QTableWidget *process_table;
+    QPushButton *allocate_button;
 };
 #endif // MAINWINDOW_H
