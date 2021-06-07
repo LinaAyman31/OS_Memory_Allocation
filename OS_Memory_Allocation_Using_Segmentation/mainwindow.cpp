@@ -3,6 +3,15 @@
 #include <QtWidgets>
 
 int new_row = 0;
+struct segment {
+    int id;
+    QString name;
+    double starting_address;
+    double end_address;
+    double size  ;
+    int type;
+    int index;
+};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
