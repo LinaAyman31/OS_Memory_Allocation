@@ -512,6 +512,107 @@ void MainWindow::worst_fit_algorithm (vector<Segment> procces,vector<Segment> &h
          }
      }
 
-void MainWindow::shuffle_algorithm(){
+vector <Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Segment> process){
+    double holes_total_size = 0, process_total_size = 0;
+        vector<Segment> total_memory;
+        Segment h, p, pro, temp_pro, arr_h, t;
 
+        for(int i=0 ; i<memory.size(); i++)
+        {
+
+            if(process[i].type == 0)
+            {
+                process_total_size += process[i].size;
+            }
+        }
+
+        for(int i=0; i<memory.size(); i++)
+        {
+            if(memory[i].type == 2)
+            {
+                t.starting_address = memory[i].starting_address;
+                t.size = memory[i].size;
+                t.finish_address = memory[i].finish_address;
+                t.type = memory[i].type;
+                t.name = memory[i].name;
+                total_memory.push_back(t);
+            }
+        }
+        for(int i=0; i<memory.size(); i++)
+        {
+            if(memory[i].type == 0)
+            {
+                t.starting_address = memory[i].starting_address;
+                t.size = memory[i].size;
+                t.finish_address = memory[i].finish_address;
+                t.type = memory[i].type;
+                t.name = memory[i].name;
+                total_memory.push_back(t);
+            }
+        }
+        for(int i=0; i<memory.size(); i++)
+        {
+            if(memory[i].type == 1)
+            {
+                holes_total_size += memory[i].size;
+            }
+        }
+        t.starting_address = memory.size() - holes_total_size;
+        t.size = holes_total_size;
+        t.finish_address = memory.size();
+        t.type = 1;
+        t.name = "Hole";
+        total_memory.push_back(t);
+
+        // allocating new processes
+        double start = memory.size() - holes_total_size;
+        if(process_total_size < holes_total_size)
+        {
+            total_memory.pop_back();
+            for(int i=0 ; i<process.size(); i++)
+            {
+                temp_pro.name = process[i].name;
+                temp_pro.size = process[i].size;
+                temp_pro.starting_address = start;
+                temp_pro.finish_address = temp_pro.starting_address + temp_pro.size;
+                temp_pro.type = 0;
+                total_memory.push_back(temp_pro);
+                start = start + temp_pro.size;
+            }
+            holes_total_size = memory.size() - start;
+            if(holes_total_size > 0)
+            {
+                    h.name = "Hole";
+                    h.size = holes_total_size;
+                    h.starting_address = memory.size() - holes_total_size;
+                    h.finish_address = memory.size();
+                    h.type = 1;
+                    total_memory.push_back(h);
+            }
+        }
+        else if(process_total_size == holes_total_size)
+        {
+            total_memory.pop_back();
+            for(int i=0 ; i<process.size(); i++)
+            {
+                temp_pro.name = process[i].name;
+                temp_pro.size = process[i].size;
+                temp_pro.starting_address = start;
+                temp_pro.finish_address = temp_pro.starting_address + temp_pro.size;
+                temp_pro.type = 0;
+                total_memory.push_back(temp_pro);
+                start = start + temp_pro.size;
+            }
+            holes_total_size = memory.size() - start;
+        }
+        else if(process_total_size > holes_total_size)
+        {
+            //cout << "ERROR";
+        }
+
+        for(int i=0 ; i<total_memory.size(); i++)
+        {
+            total_memory[i].id = i;
+        }
+        return total_memory;
 }
