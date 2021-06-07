@@ -175,7 +175,7 @@ void MainWindow::submit_holes_button_clicked() {
     }
 
     manage_holes(holes);
-    fill_memory(memory, holes, holes_table->rowCount(), memory_size.toInt());
+    fill_memory(memory, holes, memory_size.toInt());
 }
 
 void MainWindow::add_hole_button_clicked() {
@@ -257,13 +257,13 @@ void MainWindow::manage_holes(vector<Segment>& holes) {
     }
 }
 
-void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int numberOfHoles, int finishOfMemory) {
+void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int finishOfMemory) {
     Segment min_hole;
     bool flag = true;
     int index;
     while (!holes.empty()) {
         min_hole.starting_address = 10000000;
-        for (int i = 0; i < numberOfHoles; i++) {
+        for (int i = 0; i < holes.size(); i++) {
             if (holes[i].starting_address <= min_hole.starting_address) {
                 min_hole = holes[i];
                 index = i;
@@ -297,7 +297,6 @@ void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int
             flag = false;
         }
         holes.erase(holes.begin() + index);
-        numberOfHoles--;
     }
     Segment last = memory.back();
     if (last.finish_address != finishOfMemory) {
@@ -452,38 +451,36 @@ vector <Segment> MainWindow::best_fit_algorithm(vector <Segment> &holes, vector 
     return total_memory(holes_after_allocation, old_memory, allocated);
 }
 
-void MainWindow::worst_fit_algorithm(){
+vector<Segment> sort_hole(vector<Segment> holes) {
 
-    vector<Segment> sort_hole(vector<Segment> holes) {
+     for (int i = 0; i < holes.size(); i++) {
 
-         for (int i = 0; i < holes.size(); i++) {
-
-             for (int j = i + 1; j < holes.size(); j++) {
-                 if (holes[i].size < holes[j].size) {
-                     swap(holes[i], holes[j]);
-                 }
-             }
-         }
-         return holes;
-     }
-
-     void index_hole(vector<Segment>& holes, vector<Segment> all) {
-         for (int i = 0; i < all.size(); i++) {
-
-             if (all[i].type == 1) {
-                 for (int j = 0; j < holes.size(); j++) {
-                     if (holes[j].id == all[i].id) {
-                         holes[j].index = i;
-                         break;
-                     }
-                 }
+         for (int j = i + 1; j < holes.size(); j++) {
+             if (holes[i].size < holes[j].size) {
+                 swap(holes[i], holes[j]);
              }
          }
      }
+     return holes;
+ }
+void index_hole(vector<Segment>& holes, vector<Segment> all) {
+    for (int i = 0; i < all.size(); i++) {
 
-     vector<Segment> worst_fit(vector<Segment> procces,vector<Segment> &holes, vector<Segment> all) {
+        if (all[i].type == 1) {
+            for (int j = 0; j < holes.size(); j++) {
+                if (holes[j].id == all[i].id) {
+                    holes[j].index = i;
+                    break;
+                }
+            }
+        }
+    }
+}
+void MainWindow::worst_fit_algorithm (vector<Segment> procces,vector<Segment> &holes, vector<Segment> &all){
          vector<Segment> all_trial;
          all_trial = all;
+         holes = sort_hole( holes);
+         index_hole(holes,all);
          for (int i = 0; i < procces.size(); i++) {
              if (procces[i].size < holes.front().size)
              {
@@ -510,14 +507,10 @@ void MainWindow::worst_fit_algorithm(){
              }
              else {
 
-                 return all_trial;
+                 all=all_trial;
              }
          }
-
-         return all;
      }
-
-}
 
 void MainWindow::shuffle_algorithm(){
 

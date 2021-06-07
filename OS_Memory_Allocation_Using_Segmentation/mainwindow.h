@@ -40,7 +40,7 @@ public:
     void worst_fit_algorithm(vector<Segment> procces,vector<Segment> &holes, vector<Segment> &all);
     void shuffle_algorithm();
     void manage_holes(std::vector<Segment>& holes);
-    void fill_memory(vector<Segment>& memory, vector<Segment> holes, int numberOfHoles, int finishOfMemory);
+    void fill_memory(vector<Segment>& memory, vector<Segment> holes, int finishOfMemory);
 
 private slots:
     void add_memory_size_button_clicked();
