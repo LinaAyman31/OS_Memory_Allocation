@@ -27,6 +27,7 @@ private slots:
     void add_hole_button_clicked();
     void enter_segments_button_clicked();
     void allocate_process__button_clicked();
+    void dellocate_process_button_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -49,7 +50,7 @@ private:
     QRadioButton *new_process;
     QLabel *label_for_process_number;
     QLineEdit *lineEdit_for_process_number;
-    QPushButton *enter_process_number;
+    QPushButton *dellocate_button;
     QTableWidget *process_table;
     QPushButton *allocate_button;
 };

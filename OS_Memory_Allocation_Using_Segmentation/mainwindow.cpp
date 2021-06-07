@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     new_process = new QRadioButton;
     label_for_process_number = new QLabel;
     lineEdit_for_process_number = new QLineEdit;
-    enter_process_number = new QPushButton;
+    dellocate_button = new QPushButton;
     process_table = new QTableWidget;
     QStringList horizontal_process_labels;
     //QStringList vertical_process_labels;
@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     old_process->setText("Old Process");
     new_process->setText("New Process");
     label_for_process_number->setText("Enter process number: ");
-    enter_process_number->setText("Dellocate");
+    dellocate_button->setText("Dellocate");
     //process table
     process_table->setColumnCount(2);
     //process_table->setRowCount(1);
@@ -108,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent)
     choose_process_to_dellocate_layout->addWidget(new_process);
     process_dellocation_layout->addWidget(label_for_process_number);
     process_dellocation_layout->addWidget(lineEdit_for_process_number);
-    process_dellocation_layout->addWidget(enter_process_number);
+    process_dellocation_layout->addWidget(dellocate_button);
     process_dellocation_vertical_layout->addLayout(choose_process_to_dellocate_layout);
     process_dellocation_vertical_layout->addLayout(process_dellocation_layout);
     left_layout->addLayout(layout_for_memory_size);
@@ -136,6 +136,7 @@ void MainWindow::connect_buttons_function() {
     connect(add_holes_button, SIGNAL(clicked()), this, SLOT(add_hole_button_clicked()));
     connect(enter_segments, SIGNAL(clicked()), this, SLOT(enter_segments_button_clicked()));
     connect(allocate_button, SIGNAL(clicked()), this, SLOT(allocate_process_button_clicked*()));
+    connect(dellocate_button, SIGNAL(clicked()), this, SLOT(dellocate_process_button_clicked()));
 }
 
 void MainWindow::add_memory_size_button_clicked() {
@@ -162,5 +163,9 @@ void MainWindow::enter_segments_button_clicked() {
 }
 
 void MainWindow::allocate_process__button_clicked() {
+
+}
+
+void MainWindow::dellocate_process_button_clicked() {
 
 }
