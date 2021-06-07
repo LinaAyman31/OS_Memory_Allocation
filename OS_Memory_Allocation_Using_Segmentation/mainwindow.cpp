@@ -229,10 +229,10 @@ void MainWindow::dellocate_process_button_clicked() {
     }
 }
 
-void MainWindow::manage_holes(vector<Segment>& holes, int &numberOfHoles) {
-    for (int i = 0; i < numberOfHoles; i++) {
+void MainWindow::manage_holes(vector<Segment>& holes) {
+    for (int i = 0; i < holes.size(); i++) {
         holes[i].id = i;
-        for (int j = i + 1; j < numberOfHoles; j++) {
+        for (int j = i + 1; j < holes.size(); j++) {
             if (holes[j].starting_address < holes[i].finish_address && holes[j].size >= holes[i].starting_address) {
                 if (holes[i].finish_address < holes[j].finish_address) {
                     holes[i].finish_address = holes[j].finish_address;
@@ -244,14 +244,12 @@ void MainWindow::manage_holes(vector<Segment>& holes, int &numberOfHoles) {
                 }
                 holes.erase(holes.begin() + j);
                 j--;
-                numberOfHoles--;
             }
             else if (holes[j].starting_address == holes[i].finish_address) {
                 holes[i].finish_address = holes[j].finish_address;
                 holes[i].size = holes[i].finish_address - holes[i].starting_address;
                 holes.erase(holes.begin() + j);
                 j--;
-                numberOfHoles--;
             }
         }
     }

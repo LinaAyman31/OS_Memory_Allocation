@@ -39,7 +39,7 @@ public:
     void first_fit_algorithm(std::vector<Segment> &memory, std::vector<Segment> process, std::vector<Segment> &holes);
     void worst_fit_algorithm();
     void shuffle_algorithm();
-    void manage_holes(std::vector<Segment>& holes, int &numberOfHoles);
+    void manage_holes(std::vector<Segment>& holes);
     void fill_memory(vector<Segment>& memory, vector<Segment> holes, int numberOfHoles, int finishOfMemory);
 
 private slots:
