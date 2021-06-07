@@ -144,6 +144,11 @@ void MainWindow::add_memory_size_button_clicked() {
 }
 
 void MainWindow::submit_holes_button_clicked() {
+    QString memory_size = lineEdit_for_memory_size ->text();
+    for(int i=0;i<holes_table->rowCount();i++){
+        QString starting_address = holes_table->item(i, 0)->text();
+        QString size = holes_table->item(i, 1)->text();
+    }
 
 }
 
@@ -163,9 +168,29 @@ void MainWindow::enter_segments_button_clicked() {
 }
 
 void MainWindow::allocate_process_button_clicked() {
-
+    for(int i=0;i<process_table->rowCount();i++){
+        QString name = process_table->item(i, 0)->text();
+        QString size = process_table->item(i, 1)->text();
+    }
 }
 
 void MainWindow::dellocate_process_button_clicked() {
+QString deallocate_process = lineEdit_for_process_number ->text();
+}
+
+void MainWindow::first_fit_algorithm(){
 
 }
+
+void MainWindow::best_fit_algorithm(){
+
+}
+
+void MainWindow::worst_fit_algorithm(){
+
+}
+
+void MainWindow::shuffle_algorithm(){
+
+}
+

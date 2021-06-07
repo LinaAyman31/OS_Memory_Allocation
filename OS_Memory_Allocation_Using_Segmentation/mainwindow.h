@@ -20,6 +20,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void connect_buttons_function();
+    void first_fit_algorithm();
+    void best_fit_algorithm();
+    void worst_fit_algorithm();
+    void shuffle_algorithm();
 
 private slots:
     void add_memory_size_button_clicked();

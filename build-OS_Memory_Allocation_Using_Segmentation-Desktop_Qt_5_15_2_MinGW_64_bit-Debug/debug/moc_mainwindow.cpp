@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[8];
-    char stringdata0[191];
+    char stringdata0[190];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,15 +38,15 @@ QT_MOC_LITERAL(2, 42, 0), // ""
 QT_MOC_LITERAL(3, 43, 27), // "submit_holes_button_clicked"
 QT_MOC_LITERAL(4, 71, 23), // "add_hole_button_clicked"
 QT_MOC_LITERAL(5, 95, 29), // "enter_segments_button_clicked"
-QT_MOC_LITERAL(6, 125, 32), // "allocate_process__button_clicked"
-QT_MOC_LITERAL(7, 158, 32) // "dellocate_process_button_clicked"
+QT_MOC_LITERAL(6, 125, 31), // "allocate_process_button_clicked"
+QT_MOC_LITERAL(7, 157, 32) // "dellocate_process_button_clicked"
 
     },
     "MainWindow\0add_memory_size_button_clicked\0"
     "\0submit_holes_button_clicked\0"
     "add_hole_button_clicked\0"
     "enter_segments_button_clicked\0"
-    "allocate_process__button_clicked\0"
+    "allocate_process_button_clicked\0"
     "dellocate_process_button_clicked"
 };
 #undef QT_MOC_LITERAL
@@ -93,7 +93,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 1: _t->submit_holes_button_clicked(); break;
         case 2: _t->add_hole_button_clicked(); break;
         case 3: _t->enter_segments_button_clicked(); break;
-        case 4: _t->allocate_process__button_clicked(); break;
+        case 4: _t->allocate_process_button_clicked(); break;
         case 5: _t->dellocate_process_button_clicked(); break;
         default: ;
         }
