@@ -135,7 +135,7 @@ void MainWindow::connect_buttons_function() {
     connect(submit_holes, SIGNAL(clicked()), this, SLOT(submit_holes_button_clicked()));
     connect(add_holes_button, SIGNAL(clicked()), this, SLOT(add_hole_button_clicked()));
     connect(enter_segments, SIGNAL(clicked()), this, SLOT(enter_segments_button_clicked()));
-    connect(allocate_button, SIGNAL(clicked()), this, SLOT(allocate_process_button_clicked*()));
+    connect(allocate_button, SIGNAL(clicked()), this, SLOT(allocate_process_button_clicked()));
     connect(dellocate_button, SIGNAL(clicked()), this, SLOT(dellocate_process_button_clicked()));
 }
 
@@ -162,7 +162,7 @@ void MainWindow::enter_segments_button_clicked() {
     }
 }
 
-void MainWindow::allocate_process__button_clicked() {
+void MainWindow::allocate_process_button_clicked() {
 
 }
 

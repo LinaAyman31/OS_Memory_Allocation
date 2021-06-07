@@ -26,7 +26,7 @@ private slots:
     void submit_holes_button_clicked();
     void add_hole_button_clicked();
     void enter_segments_button_clicked();
-    void allocate_process__button_clicked();
+    void allocate_process_button_clicked();
     void dellocate_process_button_clicked();
 
 private:
