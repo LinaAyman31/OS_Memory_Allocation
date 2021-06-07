@@ -454,6 +454,69 @@ vector <Segment> MainWindow::best_fit_algorithm(vector <Segment> &holes, vector 
 
 void MainWindow::worst_fit_algorithm(){
 
+    vector<Segment> sort_hole(vector<Segment> holes) {
+
+         for (int i = 0; i < holes.size(); i++) {
+
+             for (int j = i + 1; j < holes.size(); j++) {
+                 if (holes[i].size < holes[j].size) {
+                     swap(holes[i], holes[j]);
+                 }
+             }
+         }
+         return holes;
+     }
+
+     void index_hole(vector<Segment>& holes, vector<Segment> all) {
+         for (int i = 0; i < all.size(); i++) {
+
+             if (all[i].type == 1) {
+                 for (int j = 0; j < holes.size(); j++) {
+                     if (holes[j].id == all[i].id) {
+                         holes[j].index = i;
+                         break;
+                     }
+                 }
+             }
+         }
+     }
+
+     vector<Segment> worst_fit(vector<Segment> procces,vector<Segment> &holes, vector<Segment> all) {
+         vector<Segment> all_trial;
+         all_trial = all;
+         for (int i = 0; i < procces.size(); i++) {
+             if (procces[i].size < holes.front().size)
+             {
+                 procces[i].starting_address = holes.front().starting_address;
+                 procces[i].finish_address = procces[i].starting_address + procces[i].size;
+                 holes.front().size -= procces[i].size;
+                 holes.front().starting_address = procces[i].finish_address;
+                 holes.front().finish_address = holes.front().starting_address + holes.front().size;
+                 all.erase(all.begin() + holes.front().index);
+                 all.insert(all.begin() + holes.front().index, holes.front());
+                 all.insert(all.begin() + holes.front().index, procces[i]);
+                 holes = sort_hole(holes);
+                 index_hole(holes, all);
+
+             }
+             else if (procces.size() == holes.front().size) {
+                 procces[i].starting_address = holes.front().starting_address;
+                 procces[i].finish_address = procces[i].starting_address + procces[i].size;
+                 all.erase(all.begin() + holes.front().index);
+                 all.insert(all.begin() + holes.front().index, procces[i]);
+                 holes.erase(holes.begin());
+
+
+             }
+             else {
+
+                 return all_trial;
+             }
+         }
+
+         return all;
+     }
+
 }
 
 void MainWindow::shuffle_algorithm(){

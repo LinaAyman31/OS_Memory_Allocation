@@ -37,7 +37,7 @@ public:
     void connect_buttons_function();
     vector <Segment> best_fit_algorithm(vector <Segment> &holes, vector <Segment> &old_memory, vector <Segment> &process);
     void first_fit_algorithm(std::vector<Segment> &memory, std::vector<Segment> process, std::vector<Segment> &holes);
-    void worst_fit_algorithm();
+    void worst_fit_algorithm(vector<Segment> procces,vector<Segment> &holes, vector<Segment> &all);
     void shuffle_algorithm();
     void manage_holes(std::vector<Segment>& holes);
     void fill_memory(vector<Segment>& memory, vector<Segment> holes, int numberOfHoles, int finishOfMemory);
