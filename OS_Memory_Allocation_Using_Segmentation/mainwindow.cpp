@@ -215,14 +215,139 @@ void deAllocate(vector <segment>& holes, vector <segment>& memory, int type, int
 }
 
 void MainWindow::dellocate_process_button_clicked() {
-QString deallocate_process = lineEdit_for_process_number ->text();
-if(deallocate_process.toInt()<=0){
-    QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
-}
+    QString deallocate_process = lineEdit_for_process_number ->text();
+    if(deallocate_process.toInt()<=0) {
+        QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
+    }
 }
 
-void MainWindow::first_fit_algorithm(){
+void MainWindow::manage_holes(vector<Segment>& holes, int &numberOfHoles) {
+    for (int i = 0; i < numberOfHoles; i++) {
+        holes[i].id = i;
+        for (int j = i + 1; j < numberOfHoles; j++) {
+            if (holes[j].starting_address < holes[i].finish_address && holes[j].size >= holes[i].starting_address) {
+                if (holes[i].finish_address < holes[j].finish_address) {
+                    holes[i].finish_address = holes[j].finish_address;
+                    holes[i].size = holes[i].finish_address - holes[i].starting_address;
+                }
+                if (holes[i].starting_address > holes[j].starting_address) {
+                    holes[i].starting_address = holes[j].starting_address;
+                    holes[i].size += holes[j].size;
+                }
+                holes.erase(holes.begin() + j);
+                j--;
+                numberOfHoles--;
+            }
+            else if (holes[j].starting_address == holes[i].finish_address) {
+                holes[i].finish_address = holes[j].finish_address;
+                holes[i].size = holes[i].finish_address - holes[i].starting_address;
+                holes.erase(holes.begin() + j);
+                j--;
+                numberOfHoles--;
+            }
+        }
+    }
+}
 
+void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int numberOfHoles, int finishOfMemory) {
+    Segment min_hole;
+    bool flag = true;
+    int index;
+    while (!holes.empty()) {
+        min_hole.starting_address = 10000000;
+        for (int i = 0; i < numberOfHoles; i++) {
+            if (holes[i].starting_address <= min_hole.starting_address) {
+                min_hole = holes[i];
+                index = i;
+            }
+        }
+        if (min_hole.starting_address != 0 && flag) {
+            Segment first;
+            first.starting_address = 0;
+            first.finish_address = min_hole.starting_address;
+            first.size = first.finish_address;
+            first.type = 0;
+            first.name = "Old process";
+            memory.push_back(first);
+            memory.push_back(min_hole);
+            flag = false;
+        }
+        else if(min_hole.starting_address != 0) {
+            Segment hole;
+            Segment temp;
+            temp = memory.back();
+            hole.starting_address = temp.finish_address;
+            hole.size = min_hole.starting_address - temp.finish_address;
+            hole.finish_address = hole.size + hole.starting_address;
+            hole.type = 0;
+            hole.name = "Old Process";
+            memory.push_back(hole);
+            memory.push_back(min_hole);
+        }
+        else if (min_hole.starting_address == 0) {
+            memory.push_back(min_hole);
+            flag = false;
+        }
+        holes.erase(holes.begin() + index);
+        numberOfHoles--;
+    }
+    Segment last = memory.back();
+    if (last.finish_address != finishOfMemory) {
+        last.starting_address = last.finish_address;
+        last.finish_address = finishOfMemory;
+        last.size = last.finish_address - last.starting_address;
+        last.type = 0;
+        last.name = "Old process";
+        memory.push_back(last);
+    }
+}
+
+void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> process, vector<Segment> &holes){
+    Segment temp_hole;
+        vector<Segment> temp_memory;
+        temp_memory = memory;
+        int hole_index;
+        for (int i = 0; i < process.size(); i++) {
+            for (int j = 0; j < temp_memory.size(); j++) {
+                if (process[i].size < temp_memory[j].size && temp_memory[j].type == 1) {
+                    process[i].starting_address = temp_memory[j].starting_address;
+                    process[i].finish_address = process[i].starting_address + process[i].size;
+                    temp_hole = temp_memory[j];
+                    //take index of the hole vector
+                    hole_index = temp_memory[j].id;
+
+                    temp_memory.erase(temp_memory.begin() + j);
+                    temp_memory.insert(temp_memory.begin() + j, process[i]);
+                    process[i].is_fit_in_memory = true;
+                    temp_hole.starting_address = process[i].finish_address;
+                    temp_hole.size = temp_hole.finish_address - temp_hole.starting_address;
+                    //edit in the holes vector
+                    holes[hole_index] = temp_hole;
+
+                    temp_memory.insert(temp_memory.begin() + j + 1, temp_hole);
+                    break;
+                }
+                else if (process[i].size == temp_memory[j].size && temp_memory[j].type == 1) {
+                    process[i].starting_address = temp_memory[j].starting_address;
+                    process[i].finish_address = process[i].starting_address + process[i].size;
+                    //edit in the holes vector
+                    hole_index = temp_memory[j].id;
+                    holes.erase(holes.begin() + hole_index);
+
+                    temp_memory.erase(temp_memory.begin() + j);
+                    temp_memory.insert(temp_memory.begin() + j, process[i]);
+                    process[i].is_fit_in_memory = true;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < process.size(); i++) {
+            if (!process[i].is_fit_in_memory) {
+                //scout << "Process can not fit.";
+                return;
+            }
+        }
+        memory = temp_memory;
 }
 
 

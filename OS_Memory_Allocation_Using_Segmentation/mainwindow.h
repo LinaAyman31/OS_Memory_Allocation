@@ -12,14 +12,15 @@
 #include <algorithm>
 using namespace std;
 
-struct segment {
+struct Segment {
     int id;
     QString name;
     int starting_address;
-    int end_address;
+    int finish_address;
     int size  ;
     int type;
     int index;
+    bool is_fit_in_memory;
 };
 
 QT_BEGIN_NAMESPACE
@@ -34,10 +35,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void connect_buttons_function();
-    void first_fit_algorithm();
-    vector <segment> best_fit_algorithm(vector <segment> &holes, vector <segment> &old_memory, vector <segment> &process);
+    vector <Segment> best_fit_algorithm(vector <Segment> &holes, vector <Segment> &old_memory, vector <Segment> &process);
+    void first_fit_algorithm(std::vector<Segment> &memory, std::vector<Segment> process, std::vector<Segment> &holes);
     void worst_fit_algorithm();
     void shuffle_algorithm();
+    void manage_holes(std::vector<Segment>& holes, int &numberOfHoles);
+    void fill_memory(vector<Segment>& memory, vector<Segment> holes, int numberOfHoles, int finishOfMemory);
 
 private slots:
     void add_memory_size_button_clicked();
