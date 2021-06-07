@@ -12,7 +12,7 @@
 #include <algorithm>
 using namespace std;
 
-struct segment {
+struct Segment {
     int id;
     QString name;
     int starting_address;
