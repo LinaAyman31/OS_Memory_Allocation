@@ -4,6 +4,7 @@
 #include <QMessageBox>
 
 int new_row = 0;
+int process_no =0;
 vector<Segment> holes;
 vector<Segment> process;
 vector<Segment> memory;
@@ -166,7 +167,7 @@ void MainWindow::submit_holes_button_clicked() {
         }
         h.starting_address = starting_address.toInt();
         h.size = size.toInt();
-        h.end_address = h.starting_address + h.size;
+        h.finish_address = h.starting_address + h.size;
         h.name = "hole";
         h.type =1;
         h.id =i;
@@ -191,13 +192,20 @@ void MainWindow::enter_segments_button_clicked() {
 }
 
 void MainWindow::allocate_process_button_clicked() {
+    Segment p;
     for(int i=0;i<process_table->rowCount();i++){
         QString name = process_table->item(i, 0)->text();
         QString size = process_table->item(i, 1)->text();
         if(size.toInt()<=0){
             QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
         }
+        p.size = size.toInt();
+        p.name = name;
+        p.type =0;
+        p.id =process_no;
+        process.push_back(p);
     }
+    process_no ++;
 }
 
 void deAllocate(vector <Segment>& holes, vector <Segment>& memory, int type, int id)
