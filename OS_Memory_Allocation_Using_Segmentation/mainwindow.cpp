@@ -174,6 +174,8 @@ void MainWindow::submit_holes_button_clicked() {
         holes.push_back(h);
     }
 
+    manage_holes(holes);
+    fill_memory(memory, holes, holes_table->rowCount(), memory_size.toInt());
 }
 
 void MainWindow::add_hole_button_clicked() {
