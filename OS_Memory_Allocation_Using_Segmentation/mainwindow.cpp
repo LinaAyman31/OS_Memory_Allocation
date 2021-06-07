@@ -4,15 +4,6 @@
 #include <QMessageBox>
 
 int new_row = 0;
-struct segment {
-    int id;
-    QString name;
-    double starting_address;
-    double end_address;
-    double size  ;
-    int type;
-    int index;
-};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -198,6 +189,20 @@ void MainWindow::allocate_process_button_clicked() {
     }
 }
 
+void deAllocate(vector <segment>& holes, vector <segment>& memory, int type, int id)
+{
+    for (int i = 0; i < memory.size(); i++)
+    {
+        if (memory[i].type == type && memory[i].id == id)
+        {
+            memory[i].name = "hole";
+            memory[i].type = 1;
+            memory[i].id = i;
+            holes.push_back(memory[i]);
+        }
+    }
+}
+
 void MainWindow::dellocate_process_button_clicked() {
 QString deallocate_process = lineEdit_for_process_number ->text();
 if(deallocate_process.toInt()<=0){
@@ -209,8 +214,98 @@ void MainWindow::first_fit_algorithm(){
 
 }
 
-void MainWindow::best_fit_algorithm(){
 
+
+class compare
+{
+public:
+    bool operator()(segment x, segment y)
+    {
+        return x.size> y.size;
+    }
+};
+class compare2
+{
+public:
+    bool operator()(segment x, segment y)
+    {
+        return x.starting_address > y.starting_address;
+    }
+};
+
+
+vector <segment> total_memory(vector <segment>const &holes_after_allocation, vector <segment>const &old_memory, vector <segment>const &allocated)
+{
+    priority_queue<segment, vector<segment>, compare2> memory;
+    for (int i = 0; i < holes_after_allocation.size() || i < allocated.size() || i < old_memory.size(); i++)
+    {
+        if (i < holes_after_allocation.size())memory.push(holes_after_allocation[i]);
+        if (i < allocated.size())memory.push(allocated[i]);
+        if (i < old_memory.size())memory.push(old_memory[i]);
+    }
+    vector<segment> m;
+    while (!memory.empty())
+    {
+        m.push_back(memory.top());
+        memory.pop();
+    }
+    return m;
+}
+vector <segment> MainWindow::best_fit_algorithm(vector <segment> &holes, vector <segment> &old_memory, vector <segment> &process ){
+    for (int i = 0; i < old_memory.size(); i++)
+    {
+        if (old_memory[i].type == 1)
+        {
+            old_memory.erase(old_memory.begin() + i);
+        }
+    }
+    priority_queue<segment, vector<segment>, compare> x;
+    priority_queue<segment, vector<segment>, compare> y;
+    vector<segment> allocated;
+    vector<segment> holes_after_allocation;
+    for (int i = 0; i < holes.size(); i++)
+    {
+        x.push(holes[i]);
+    }
+    for (int i = 0; i < process.size(); i++)
+    {
+        y.push(process[i]);
+    }
+    segment top_y, top_x;
+    while (!y.empty())
+    {
+        if (x.empty())
+        {
+            allocated.clear();
+            holes_after_allocation = holes;
+            break;
+        }
+        top_y = y.top();
+        top_x = x.top();
+        if (top_y.size <=top_x.size)
+        {
+            allocated.push_back(segment{top_y.id ,top_y.name ,top_x.starting_address ,top_y.size ,top_y.type});
+            x.pop();
+            y.pop();
+            top_x.size -= top_y.size;
+            if (top_x.size) {
+                top_x.starting_address += top_y.size;
+                x.push(top_x);
+            }
+        }
+        else
+        {
+            holes_after_allocation.push_back(top_x);
+            x.pop();
+        }
+    }
+    while(!x.empty())
+    {
+        holes_after_allocation.push_back(x.top());
+        x.pop();
+    }
+    holes = holes_after_allocation;
+    return total_memory(holes_after_allocation, old_memory, allocated);
 }
 
 void MainWindow::worst_fit_algorithm(){
@@ -220,4 +315,3 @@ void MainWindow::worst_fit_algorithm(){
 void MainWindow::shuffle_algorithm(){
 
 }
-

@@ -7,6 +7,20 @@
 #include <QPushButton>
 #include <QTableWidget>
 #include <QRadioButton>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+struct segment {
+    int id;
+    QString name;
+    int starting_address;
+    int end_address;
+    int size  ;
+    int type;
+    int index;
+};
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,7 +35,7 @@ public:
     ~MainWindow();
     void connect_buttons_function();
     void first_fit_algorithm();
-    void best_fit_algorithm();
+    vector <segment> best_fit_algorithm(vector <segment> &holes, vector <segment> &old_memory, vector <segment> &process);
     void worst_fit_algorithm();
     void shuffle_algorithm();
 
