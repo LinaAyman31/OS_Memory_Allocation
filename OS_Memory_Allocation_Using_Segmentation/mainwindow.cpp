@@ -5,6 +5,7 @@
 
 int new_row = 0;
 int process_no =0;
+int holes_total_size=0;
 vector<Segment> holes;
 vector<Segment> process;
 vector<Segment> memory;
@@ -153,16 +154,16 @@ void MainWindow::submit_holes_button_clicked() {
     if(memory_size.toInt()<=0){
         QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
     }
-    int total_size=0;
+    holes_total_size =0;
     Segment h;
     for(int i=0;i<holes_table->rowCount();i++){
         QString starting_address = holes_table->item(i, 0)->text();
         QString size = holes_table->item(i, 1)->text();
-        total_size+= size.toInt();
-        if(size.toInt()<=0 || starting_address.toInt() <=0){
+        holes_total_size+= size.toInt();
+        if(size.toInt()<=0 || starting_address.toInt() <0){
             QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
         }
-        if(total_size > memory_size.toInt() ){
+        if(holes_total_size > memory_size.toInt() ){
              QMessageBox::warning(this, "Wrong Input", "holes size exceeds the memory size");
         }
         h.starting_address = starting_address.toInt();
@@ -195,6 +196,7 @@ void MainWindow::enter_segments_button_clicked() {
 
 void MainWindow::allocate_process_button_clicked() {
     Segment p;
+    int p_size=0;
     for(int i=0;i<process_table->rowCount();i++){
         QString name = process_table->item(i, 0)->text();
         QString size = process_table->item(i, 1)->text();
@@ -202,10 +204,14 @@ void MainWindow::allocate_process_button_clicked() {
             QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
         }
         p.size = size.toInt();
+        p_size += size.toInt();
         p.name = name;
         p.type =0;
         p.id =process_no;
         process.push_back(p);
+    }
+    if(p_size> holes_total_size){
+        QMessageBox::warning(this, "Wrong Input", "procces size exceeds the memory size");
     }
     process_no ++;
 }
