@@ -10,7 +10,13 @@
 #include <vector>
 #include <queue>
 #include <algorithm>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+
 using namespace std;
+
+const int Rectangle_Width=120;
+const int Rectangle_Height=50;
 
 struct Segment {
     int id;
@@ -41,9 +47,10 @@ public:
     vector <Segment> shuffle_algorithm(vector<Segment> memory, vector<Segment> process);
     void manage_holes(std::vector<Segment>& holes);
     void fill_memory(vector<Segment>& memory, vector<Segment> holes, int finishOfMemory);
+    void draw_memory(vector<Segment> memory);
 
 private slots:
-    void add_memory_size_button_clicked();
+   // void add_memory_size_button_clicked();
     void submit_holes_button_clicked();
     void add_hole_button_clicked();
     void enter_segments_button_clicked();
@@ -54,7 +61,7 @@ private:
     Ui::MainWindow *ui;
     QLineEdit *lineEdit_for_memory_size;
     QLabel *label_for_memory_size;
-    QPushButton *push_button_for_memory_size;
+    //QPushButton *push_button_for_memory_size;
     QPushButton *add_holes_button;
     QTableWidget *holes_table;
     QPushButton *submit_holes;
@@ -74,5 +81,8 @@ private:
     QPushButton *dellocate_button;
     QTableWidget *process_table;
     QPushButton *allocate_button;
+    QGraphicsScene *draw_scene;
+    QGraphicsView *view;
+    QGraphicsRectItem *rectangle;
 };
 #endif // MAINWINDOW_H

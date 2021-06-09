@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *process_dellocation_vertical_layout = new QVBoxLayout;
     lineEdit_for_memory_size = new QLineEdit;
     label_for_memory_size = new QLabel;
-    push_button_for_memory_size = new QPushButton;
+    //push_button_for_memory_size = new QPushButton;
     add_holes_button = new QPushButton;
     holes_table = new QTableWidget;
     QStringList vertical_holes_labels;
@@ -56,12 +56,15 @@ MainWindow::MainWindow(QWidget *parent)
     QStringList horizontal_process_labels;
     //QStringList vertical_process_labels;
     allocate_button = new QPushButton;
+    draw_scene = new QGraphicsScene;
+    view = new QGraphicsView(draw_scene);
+    rectangle = new QGraphicsRectItem;
 
     // ************** usage of instances ********************
     widget->setLayout(main_layout);
     label_for_memory_size->setText("Enter total size of memory: ");
-    push_button_for_memory_size->setText("Enter");
-    add_holes_button->setText("Add Hole");
+    //push_button_for_memory_size->setText("Enter");
+    add_holes_button->setText("Add new hole");
     holes_table->setColumnCount(2);
     holes_table->setRowCount(1);
     horizontal_holes_labels << "Starting Address" << "Size";
@@ -97,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent)
     // ************** layouts *******************************
     layout_for_memory_size->addWidget(label_for_memory_size);
     layout_for_memory_size->addWidget(lineEdit_for_memory_size);
-    layout_for_memory_size->addWidget(push_button_for_memory_size);
+   // layout_for_memory_size->addWidget(push_button_for_memory_size);
     holes_layout->addWidget(add_holes_button);
     holes_layout->addWidget(holes_table);
     holes_layout->addWidget(submit_holes);
@@ -125,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent)
     left_layout->addLayout(process_method);
     left_layout->addLayout(process_layout);
     right_layout->addLayout(process_dellocation_vertical_layout);
+    right_layout->addWidget(view);
     main_layout->addLayout(left_layout);
     main_layout->addLayout(right_layout);
 
@@ -139,7 +143,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::connect_buttons_function() {
-    connect(push_button_for_memory_size, SIGNAL(clicked), this, SLOT(add_memory_size_button_clicked()));
+    //connect(push_button_for_memory_size, SIGNAL(clicked), this, SLOT(add_memory_size_button_clicked()));
     connect(submit_holes, SIGNAL(clicked()), this, SLOT(submit_holes_button_clicked()));
     connect(add_holes_button, SIGNAL(clicked()), this, SLOT(add_hole_button_clicked()));
     connect(enter_segments, SIGNAL(clicked()), this, SLOT(enter_segments_button_clicked()));
@@ -147,7 +151,31 @@ void MainWindow::connect_buttons_function() {
     connect(dellocate_button, SIGNAL(clicked()), this, SLOT(dellocate_process_button_clicked()));
 }
 
-void MainWindow::add_memory_size_button_clicked() {
+//void MainWindow::add_memory_size_button_clicked() {
+
+//}
+
+void MainWindow::draw_memory(vector<Segment> memory) {
+    QBrush color_brush(QColor("white"));
+    QPen blackpen(Qt::black);
+    blackpen.setWidth(1);
+
+    rectangle=draw_scene->addRect(-200,0,Rectangle_Width,Rectangle_Height*process[0].size,blackpen, color_brush);
+    QString start_address = QString::number(memory[0].starting_address);
+    QGraphicsTextItem *txtitem = new QGraphicsTextItem(start_address);
+    txtitem->setPos(QPointF(-220, -11));
+    QString finish_address = QString::number(memory[0].finish_address);
+    QGraphicsTextItem *txtitem_2 = new QGraphicsTextItem(finish_address);
+    txtitem_2->setPos(QPointF(-220, -11+Rectangle_Height*process[0].size));
+    draw_scene->addItem(txtitem_2);
+
+    for (int i = 1; i < memory.size(); i++) {
+        rectangle=draw_scene->addRect(-200, 0 + Rectangle_Height*process[i - 1].finish_address,Rectangle_Width,Rectangle_Height*process[i].size,blackpen, color_brush);
+        QString start = QString::number(memory[i].finish_address);
+        QGraphicsTextItem *txtitem = new QGraphicsTextItem(start);
+        txtitem->setPos(QPointF(-220, -11+Rectangle_Height*process[i].finish_address));
+        draw_scene->addItem(txtitem);
+    }
 
 }
 
@@ -182,7 +210,7 @@ void MainWindow::submit_holes_button_clicked() {
 }
 
 void MainWindow::add_hole_button_clicked() {
-    add_holes_button->setText("Add new hole");
+    //add_holes_button->setText("Add new hole");
     new_row++;
     holes_table->insertRow(new_row);
 }
@@ -250,7 +278,7 @@ void deAllocate(vector <Segment>& holes, vector <Segment>& memory, int type, int
 
 void MainWindow::dellocate_process_button_clicked() {
     QString deallocate_process = lineEdit_for_process_number ->text();
-    if(deallocate_process.toInt()<=0) {
+    if(deallocate_process.toInt()<0) {
         QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
     }
 }
