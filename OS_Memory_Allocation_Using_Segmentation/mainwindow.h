@@ -49,6 +49,7 @@ public:
     void manage_holes(std::vector<Segment>& holes);
     void fill_memory(vector<Segment>& memory, vector<Segment> holes, int finishOfMemory);
     void draw_memory(vector<Segment> memory);
+    void manage_holes_id(vector<Segment> &memory);
 
 private slots:
     void submit_holes_button_clicked();

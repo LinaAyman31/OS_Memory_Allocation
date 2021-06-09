@@ -161,18 +161,41 @@ void MainWindow::draw_memory(vector<Segment> memory) {
     rectangle=draw_scene->addRect(-200,0,Rectangle_Width,Rectangle_Height*memory[0].size,blackpen, color_brush);
     QString start_address = QString::number(memory[0].starting_address);
     QGraphicsTextItem *txtitem = new QGraphicsTextItem(start_address);
-    txtitem->setPos(QPointF(-240, -11));
+    txtitem->setPos(QPointF(-240, -13));
+    draw_scene->addItem(txtitem);
     QString finish_address = QString::number(memory[0].finish_address);
     QGraphicsTextItem *txtitem_2 = new QGraphicsTextItem(finish_address);
-    txtitem_2->setPos(QPointF(-240, -11+Rectangle_Height*memory[0].size));
+    txtitem_2->setPos(QPointF(-240, -13+Rectangle_Height*memory[0].size));
     draw_scene->addItem(txtitem_2);
+
+    //to write inside memory;
+    QGraphicsTextItem *text_inside_memory;
+    if (memory[0].type == 0) {
+        text_inside_memory = new QGraphicsTextItem("P" +QString::number(memory[0].id) + ":" + memory[0].name);
+    }
+    else {
+        text_inside_memory = new QGraphicsTextItem(memory[0].name+QString::number(memory[0].id));
+    }
+    text_inside_memory->setPos(QPointF(-240 + Rectangle_Width/2, -13+(Rectangle_Height*memory[0].finish_address)/2));
+    draw_scene->addItem(text_inside_memory);
 
     for (int i = 1; i < memory.size(); i++) {
         rectangle=draw_scene->addRect(-200, 0 + Rectangle_Height*memory[i - 1].finish_address,Rectangle_Width,Rectangle_Height*memory[i].size,blackpen, color_brush);
         QString start = QString::number(memory[i].finish_address);
         QGraphicsTextItem *txtitem = new QGraphicsTextItem(start);
-        txtitem->setPos(QPointF(-240, -11+Rectangle_Height*memory[i].finish_address));
+        txtitem->setPos(QPointF(-240, -13+Rectangle_Height*memory[i].finish_address));
         draw_scene->addItem(txtitem);
+
+        //to write inside memory;
+        QGraphicsTextItem *text_inside_memory;
+        if (memory[i].type == 0) {
+            text_inside_memory = new QGraphicsTextItem("P" +QString::number(memory[i].id) + ":" + memory[i].name);
+        }
+        else {
+            text_inside_memory = new QGraphicsTextItem(memory[i].name+QString::number(memory[i].id));
+        }
+        text_inside_memory->setPos(QPointF(-240 + Rectangle_Width/2, -13+Rectangle_Height*(memory[i].finish_address-memory[i].size/2)));
+        draw_scene->addItem(text_inside_memory);
     }
 
 }
@@ -197,7 +220,7 @@ void MainWindow::submit_holes_button_clicked() {
         h.starting_address = starting_address.toInt();
         h.size = size.toInt();
         h.finish_address = h.starting_address + h.size;
-        h.name = "hole";
+        h.name = "Hole";
         h.type =1;
         h.id =i;
         holes.push_back(h);
@@ -265,15 +288,34 @@ void MainWindow::allocate_process_button_clicked() {
     }
 }
 
+void MainWindow::manage_holes_id(vector<Segment> &memory) {
+    int hole_id = 0;
+    for (int i = 0; i < memory.size() - 1; i++){
+        if (memory[i].type == 1 && memory[i + 1].type == 1) {
+           memory[i].finish_address = memory[i+1].finish_address;
+           memory[i].size = memory[i].finish_address - memory[i].starting_address;
+           memory.erase(memory.begin() + i + 1);
+           i--;
+        }
+    }
+
+    for (int i = 0; i < memory.size(); i++) {
+        if (memory[i].type == 1) {
+            memory[i].id = hole_id;
+            hole_id++;
+        }
+    }
+}
+
 void deAllocate(vector <Segment>& holes, vector <Segment>& memory, int type, int id)
 {
     for (int i = 0; i < memory.size(); i++)
     {
         if (memory[i].type == type && memory[i].id == id)
         {
-            memory[i].name = "hole";
+            memory[i].name = "Hole";
             memory[i].type = 1;
-            memory[i].id = i;
+            memory[i].id = holes.size();
             holes.push_back(memory[i]);
         }
     }
@@ -281,41 +323,64 @@ void deAllocate(vector <Segment>& holes, vector <Segment>& memory, int type, int
 
 void MainWindow::dellocate_process_button_clicked() {
     QString deallocate_process = lineEdit_for_process_number ->text();
+    int id = deallocate_process.toInt();
     if(deallocate_process.toInt()<0) {
         QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
     }
+    int type;
+    if (old_process->isChecked()) {
+        type = 2;
+        deAllocate(holes, memory, type, id);
+        manage_holes_id(memory);
+        draw_memory(memory);
+    }
+    else if (new_process->isChecked()) {
+        type = 0;
+        deAllocate(holes, memory, type, id);
+        manage_holes_id(memory);
+        draw_memory(memory);
+    }
+    else
+         QMessageBox::warning(this, "Wrong Input", "Please choose type of process");
 }
 
 void MainWindow::manage_holes(vector<Segment>& holes) {
     for (int i = 0; i < holes.size(); i++) {
-        holes[i].id = i;
-        for (int j = i + 1; j < holes.size(); j++) {
-            if (holes[j].starting_address < holes[i].finish_address && holes[j].size >= holes[i].starting_address) {
-                if (holes[i].finish_address < holes[j].finish_address) {
+            holes[i].id = i;
+            for (int j = i + 1; j < holes.size(); j++) {
+                if (holes[j].starting_address < holes[i].starting_address && holes[j].size >= holes[i].starting_address) {
+                    if (holes[i].finish_address < holes[j].finish_address) {
+                        holes[i].finish_address = holes[j].finish_address;
+                        holes[i].size = holes[i].finish_address - holes[i].starting_address;
+                    }
+                    if (holes[i].starting_address > holes[j].starting_address) {
+                        holes[i].starting_address = holes[j].starting_address;
+                        holes[i].size += holes[j].size;
+                    }
+                    holes.erase(holes.begin() + j);
+                    j--;
+                }
+                else if (holes[j].starting_address == holes[i].finish_address) {
                     holes[i].finish_address = holes[j].finish_address;
                     holes[i].size = holes[i].finish_address - holes[i].starting_address;
+                    holes.erase(holes.begin() + j);
+                    j--;
                 }
-                if (holes[i].starting_address > holes[j].starting_address) {
-                    holes[i].starting_address = holes[j].starting_address;
-                    holes[i].size += holes[j].size;
+                else if (holes[j].starting_address <= holes[i].finish_address) {
+                    if (holes[j].finish_address > holes[i].finish_address)
+                        holes[i].finish_address = holes[j].finish_address;
+                    holes.erase(holes.begin() + j);
+                    j--;
                 }
-                holes.erase(holes.begin() + j);
-                j--;
-            }
-            else if (holes[j].starting_address == holes[i].finish_address) {
-                holes[i].finish_address = holes[j].finish_address;
-                holes[i].size = holes[i].finish_address - holes[i].starting_address;
-                holes.erase(holes.begin() + j);
-                j--;
             }
         }
-    }
 }
 
 void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int finishOfMemory) {
     Segment min_hole;
     bool flag = true;
     int index;
+    int old_process_index = 0;
     while (!holes.empty()) {
         min_hole.starting_address = 10000000;
         for (int i = 0; i < holes.size(); i++) {
@@ -329,8 +394,10 @@ void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int
             first.starting_address = 0;
             first.finish_address = min_hole.starting_address;
             first.size = first.finish_address;
-            first.type = 0;
-            first.name = "Old process";
+            first.type = 2;
+            first.name = "Old Process";
+            first.id = old_process_index;
+            old_process_index++;
             memory.push_back(first);
             memory.push_back(min_hole);
             flag = false;
@@ -342,8 +409,10 @@ void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int
             hole.starting_address = temp.finish_address;
             hole.size = min_hole.starting_address - temp.finish_address;
             hole.finish_address = hole.size + hole.starting_address;
-            hole.type = 0;
+            hole.type = 2;
             hole.name = "Old Process";
+            hole.id = old_process_index;
+            old_process_index++;
             memory.push_back(hole);
             memory.push_back(min_hole);
         }
@@ -358,8 +427,10 @@ void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int
         last.starting_address = last.finish_address;
         last.finish_address = finishOfMemory;
         last.size = last.finish_address - last.starting_address;
-        last.type = 0;
+        last.type = 2;
         last.name = "Old process";
+        last.id = old_process_index;
+        old_process_index++;
         memory.push_back(last);
     }
 }
@@ -410,6 +481,7 @@ void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> pr
             }
         }
         memory = temp_memory;
+        manage_holes_id(memory);
 }
 
 
