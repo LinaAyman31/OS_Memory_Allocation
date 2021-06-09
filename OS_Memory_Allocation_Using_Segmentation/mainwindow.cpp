@@ -3,7 +3,8 @@
 #include <QtWidgets>
 #include <QMessageBox>
 #include <QGraphicsSimpleTextItem>
-
+#include <QGraphicsTextItem>
+#include <QColor>
 
 int new_row = 0;
 int process_no =0;
@@ -56,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     QStringList horizontal_process_labels;
     //QStringList vertical_process_labels;
     allocate_button = new QPushButton;
-    draw_scene = new QGraphicsScene;
+    draw_scene = new QGraphicsScene(this);
     view = new QGraphicsView(draw_scene);
     rectangle = new QGraphicsRectItem;
 
@@ -96,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
     process_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     process_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     allocate_button->setText("Allocate Process");
+    //view->setScene(draw_scene);
 
     // ************** layouts *******************************
     layout_for_memory_size->addWidget(label_for_memory_size);
@@ -143,7 +145,6 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::connect_buttons_function() {
-    //connect(push_button_for_memory_size, SIGNAL(clicked), this, SLOT(add_memory_size_button_clicked()));
     connect(submit_holes, SIGNAL(clicked()), this, SLOT(submit_holes_button_clicked()));
     connect(add_holes_button, SIGNAL(clicked()), this, SLOT(add_hole_button_clicked()));
     connect(enter_segments, SIGNAL(clicked()), this, SLOT(enter_segments_button_clicked()));
@@ -151,29 +152,26 @@ void MainWindow::connect_buttons_function() {
     connect(dellocate_button, SIGNAL(clicked()), this, SLOT(dellocate_process_button_clicked()));
 }
 
-//void MainWindow::add_memory_size_button_clicked() {
-
-//}
 
 void MainWindow::draw_memory(vector<Segment> memory) {
     QBrush color_brush(QColor("white"));
     QPen blackpen(Qt::black);
     blackpen.setWidth(1);
 
-    rectangle=draw_scene->addRect(-200,0,Rectangle_Width,Rectangle_Height*process[0].size,blackpen, color_brush);
+    rectangle=draw_scene->addRect(-200,0,Rectangle_Width,Rectangle_Height*memory[0].size,blackpen, color_brush);
     QString start_address = QString::number(memory[0].starting_address);
     QGraphicsTextItem *txtitem = new QGraphicsTextItem(start_address);
-    txtitem->setPos(QPointF(-220, -11));
+    txtitem->setPos(QPointF(-240, -11));
     QString finish_address = QString::number(memory[0].finish_address);
     QGraphicsTextItem *txtitem_2 = new QGraphicsTextItem(finish_address);
-    txtitem_2->setPos(QPointF(-220, -11+Rectangle_Height*process[0].size));
+    txtitem_2->setPos(QPointF(-240, -11+Rectangle_Height*memory[0].size));
     draw_scene->addItem(txtitem_2);
 
     for (int i = 1; i < memory.size(); i++) {
-        rectangle=draw_scene->addRect(-200, 0 + Rectangle_Height*process[i - 1].finish_address,Rectangle_Width,Rectangle_Height*process[i].size,blackpen, color_brush);
+        rectangle=draw_scene->addRect(-200, 0 + Rectangle_Height*memory[i - 1].finish_address,Rectangle_Width,Rectangle_Height*memory[i].size,blackpen, color_brush);
         QString start = QString::number(memory[i].finish_address);
         QGraphicsTextItem *txtitem = new QGraphicsTextItem(start);
-        txtitem->setPos(QPointF(-220, -11+Rectangle_Height*process[i].finish_address));
+        txtitem->setPos(QPointF(-240, -11+Rectangle_Height*memory[i].finish_address));
         draw_scene->addItem(txtitem);
     }
 
@@ -207,6 +205,7 @@ void MainWindow::submit_holes_button_clicked() {
 
     manage_holes(holes);
     fill_memory(memory, holes, memory_size.toInt());
+    draw_memory(memory);
 }
 
 void MainWindow::add_hole_button_clicked() {
@@ -247,18 +246,22 @@ void MainWindow::allocate_process_button_clicked() {
     if(first_fit->isChecked())
     {
         first_fit_algorithm(memory,process,holes);
+        draw_memory(memory);
     }
     else if (best_fit->isChecked())
     {
-       best_fit_algorithm(holes,memory,process);
+       memory = best_fit_algorithm(holes,memory,process);
+       draw_memory(memory);
     }
     else if (worst_fit->isChecked())
     {
         worst_fit_algorithm(process,holes,memory);
+        draw_memory(memory);
     }
     else if (shuffle->isChecked())
     {
-        shuffle_algorithm(memory,process);
+        memory = shuffle_algorithm(memory,process);
+        draw_memory(memory);
     }
 }
 
@@ -429,7 +432,7 @@ public:
 };
 
 
-vector <Segment> total_memory(vector <Segment>const &holes_after_allocation, vector <Segment>const &old_memory, vector <Segment>const &allocated)
+vector<Segment> total_memory(vector <Segment>const &holes_after_allocation, vector <Segment>const &old_memory, vector <Segment>const &allocated)
 {
     priority_queue<Segment, vector<Segment>, compare2> memory;
     for (int i = 0; i < holes_after_allocation.size() || i < allocated.size() || i < old_memory.size(); i++)
@@ -446,7 +449,7 @@ vector <Segment> total_memory(vector <Segment>const &holes_after_allocation, vec
     }
     return m;
 }
-vector <Segment> MainWindow::best_fit_algorithm(vector <Segment> &holes, vector <Segment> &old_memory, vector <Segment> &process ){
+vector<Segment> MainWindow::best_fit_algorithm(vector <Segment> &holes, vector <Segment> &old_memory, vector <Segment> &process ){
     for (int i = 0; i < old_memory.size(); i++)
     {
         if (old_memory[i].type == 1)
@@ -564,7 +567,7 @@ void MainWindow::worst_fit_algorithm (vector<Segment> procces,vector<Segment> &h
          }
      }
 
-vector <Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Segment> process){
+vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Segment> process){
     double holes_total_size = 0, process_total_size = 0;
         vector<Segment> total_memory;
         Segment h, p, pro, temp_pro, arr_h, t;

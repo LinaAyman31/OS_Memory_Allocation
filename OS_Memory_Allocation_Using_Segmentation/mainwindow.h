@@ -12,11 +12,12 @@
 #include <algorithm>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QGraphicsRectItem>
 
 using namespace std;
 
 const int Rectangle_Width=120;
-const int Rectangle_Height=50;
+const double Rectangle_Height=0.7;
 
 struct Segment {
     int id;
@@ -50,7 +51,6 @@ public:
     void draw_memory(vector<Segment> memory);
 
 private slots:
-   // void add_memory_size_button_clicked();
     void submit_holes_button_clicked();
     void add_hole_button_clicked();
     void enter_segments_button_clicked();
