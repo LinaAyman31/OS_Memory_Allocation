@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QtWidgets>
 #include <QMessageBox>
+#include <QGraphicsSimpleTextItem>
+
 
 int new_row = 0;
 int process_no =0;
@@ -211,9 +213,25 @@ void MainWindow::allocate_process_button_clicked() {
         process.push_back(p);
     }
     if(p_size> holes_total_size){
-        QMessageBox::warning(this, "Wrong Input", "procces size exceeds the memory size");
+        QMessageBox::warning(this, "Wrong Input", " this process does not fit");
     }
     process_no ++;
+    if(first_fit->isChecked())
+    {
+        first_fit_algorithm(memory,process,holes);
+    }
+    else if (best_fit->isChecked())
+    {
+       best_fit_algorithm(holes,memory,process);
+    }
+    else if (worst_fit->isChecked())
+    {
+        worst_fit_algorithm(process,holes,memory);
+    }
+    else if (shuffle->isChecked())
+    {
+        shuffle_algorithm(memory,process);
+    }
 }
 
 void deAllocate(vector <Segment>& holes, vector <Segment>& memory, int type, int id)
@@ -356,7 +374,7 @@ void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> pr
         }
         for (int i = 0; i < process.size(); i++) {
             if (!process[i].is_fit_in_memory) {
-                //scout << "Process can not fit.";
+                QMessageBox::warning(this, "Wrong Input", " this process does not fit");
                 return;
             }
         }
@@ -500,20 +518,20 @@ void MainWindow::worst_fit_algorithm (vector<Segment> procces,vector<Segment> &h
                  all.insert(all.begin() + holes.front().index, procces[i]);
                  holes = sort_hole(holes);
                  index_hole(holes, all);
-
              }
-             else if (procces.size() == holes.front().size) {
+             else if (procces[i].size == holes.front().size) {
                  procces[i].starting_address = holes.front().starting_address;
                  procces[i].finish_address = procces[i].starting_address + procces[i].size;
                  all.erase(all.begin() + holes.front().index);
                  all.insert(all.begin() + holes.front().index, procces[i]);
                  holes.erase(holes.begin());
 
-
              }
              else {
 
                  all=all_trial;
+                 QMessageBox::warning(this, "Wrong Input", " this process does not fit");
+                 break;
              }
          }
      }
@@ -613,7 +631,7 @@ vector <Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Se
         }
         else if(process_total_size > holes_total_size)
         {
-            //cout << "ERROR";
+           QMessageBox::warning(this, "Wrong Input", " this process does not fit");
         }
 
         for(int i=0 ; i<total_memory.size(); i++)
