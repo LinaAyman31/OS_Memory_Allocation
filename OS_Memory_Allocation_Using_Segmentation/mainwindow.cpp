@@ -660,7 +660,7 @@ void MainWindow::worst_fit_algorithm (vector<Segment> procces,vector<Segment> &h
          }
      }
 
-vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> &memory, vector<Segment> process){
+vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> &memory, vector<Segment> &process){
     double holes_total_size = 0, process_total_size = 0;
     double start_old = memory[0].starting_address;
         vector<Segment> total_memory;
