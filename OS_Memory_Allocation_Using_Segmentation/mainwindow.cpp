@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *left_layout = new QVBoxLayout;
     QVBoxLayout *right_layout = new QVBoxLayout;
     QHBoxLayout *layout_for_memory_size = new QHBoxLayout;
+    QHBoxLayout *layout_for_add_remove_hole = new QHBoxLayout;
     QVBoxLayout *holes_layout = new QVBoxLayout;
     QVBoxLayout *process_layout = new QVBoxLayout;
     QHBoxLayout *segments_layout = new QHBoxLayout;
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     label_for_memory_size = new QLabel;
     //push_button_for_memory_size = new QPushButton;
     add_holes_button = new QPushButton;
+    remove_hole_button = new QPushButton;
     holes_table = new QTableWidget;
     QStringList vertical_holes_labels;
     QStringList horizontal_holes_labels;
@@ -66,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     label_for_memory_size->setText("Enter total size of memory: ");
     //push_button_for_memory_size->setText("Enter");
     add_holes_button->setText("Add new hole");
+    remove_hole_button->setText("Clear hole");
     holes_table->setColumnCount(2);
     holes_table->setRowCount(1);
     horizontal_holes_labels << "Starting Address" << "Size";
@@ -103,7 +106,9 @@ MainWindow::MainWindow(QWidget *parent)
     layout_for_memory_size->addWidget(label_for_memory_size);
     layout_for_memory_size->addWidget(lineEdit_for_memory_size);
    // layout_for_memory_size->addWidget(push_button_for_memory_size);
-    holes_layout->addWidget(add_holes_button);
+    layout_for_add_remove_hole->addWidget(add_holes_button);
+    layout_for_add_remove_hole->addWidget(remove_hole_button);
+    holes_layout->addLayout(layout_for_add_remove_hole);
     holes_layout->addWidget(holes_table);
     holes_layout->addWidget(submit_holes);
     segments_layout->addWidget(label_for_number_of_segments);
@@ -147,6 +152,7 @@ MainWindow::~MainWindow()
 void MainWindow::connect_buttons_function() {
     connect(submit_holes, SIGNAL(clicked()), this, SLOT(submit_holes_button_clicked()));
     connect(add_holes_button, SIGNAL(clicked()), this, SLOT(add_hole_button_clicked()));
+    connect(remove_hole_button, SIGNAL(clicked()), this, SLOT(remove_hole_button_clicked()));
     connect(enter_segments, SIGNAL(clicked()), this, SLOT(enter_segments_button_clicked()));
     connect(allocate_button, SIGNAL(clicked()), this, SLOT(allocate_process_button_clicked()));
     connect(dellocate_button, SIGNAL(clicked()), this, SLOT(dellocate_process_button_clicked()));
@@ -247,6 +253,11 @@ void MainWindow::add_hole_button_clicked() {
     //add_holes_button->setText("Add new hole");
     new_row++;
     holes_table->insertRow(new_row);
+}
+
+void MainWindow::remove_hole_button_clicked() {
+    holes_table->removeRow(holes_table->rowCount() - 1);
+    new_row--;
 }
 
 void MainWindow::enter_segments_button_clicked() {
@@ -674,44 +685,62 @@ void MainWindow::worst_fit_algorithm (vector<Segment> procces,vector<Segment> &h
          }
      }
 
-vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Segment> process){
+vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> &memory, vector<Segment> &process){
     double holes_total_size = 0, process_total_size = 0;
+    double start_old = memory[0].starting_address;
         vector<Segment> total_memory;
         Segment h, p, pro, temp_pro, arr_h, t;
 
-        for(int i=0 ; i<memory.size(); i++)
+        for (int i = 0; i < memory.size(); i++)
         {
-
-            if(process[i].type == 0)
-            {
-                process_total_size += process[i].size;
+            for (int j = i + 1; j < memory.size(); j++) {
+                if (memory[i].starting_address > memory[j].starting_address) {
+                    swap(memory[i], memory[j]);
+                }
             }
+        }
+
+        for(int i=0 ; i<process.size(); i++)
+        {
+                process_total_size += process[i].size;
         }
 
         for(int i=0; i<memory.size(); i++)
         {
             if(memory[i].type == 2)
             {
-                t.starting_address = memory[i].starting_address;
+                t.starting_address = start_old;
                 t.size = memory[i].size;
-                t.finish_address = memory[i].finish_address;
+                t.finish_address = t.starting_address + t.size;
                 t.type = memory[i].type;
                 t.name = memory[i].name;
+                t.id = memory[i].id;
                 total_memory.push_back(t);
+                start_old = t.finish_address;
             }
         }
+        double start_new = start_old, pro_id = 0, flag = 0;
         for(int i=0; i<memory.size(); i++)
         {
             if(memory[i].type == 0)
             {
-                t.starting_address = memory[i].starting_address;
+                flag = 1;
+                t.starting_address = start_new;
                 t.size = memory[i].size;
-                t.finish_address = memory[i].finish_address;
+                t.finish_address = t.starting_address + t.size;
                 t.type = memory[i].type;
                 t.name = memory[i].name;
+                t.id = memory[i].id;
                 total_memory.push_back(t);
+                start_new = t.finish_address;
+                pro_id = t.id;
             }
         }
+        if(flag == 1)
+        {
+            pro_id++;
+        }
+
         for(int i=0; i<memory.size(); i++)
         {
             if(memory[i].type == 1)
@@ -719,15 +748,18 @@ vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Seg
                 holes_total_size += memory[i].size;
             }
         }
-        t.starting_address = memory.size() - holes_total_size;
+        t.starting_address = start_new;
         t.size = holes_total_size;
-        t.finish_address = memory.size();
+        t.finish_address = t.starting_address + t.size;
         t.type = 1;
         t.name = "Hole";
+        t.id = 0;
         total_memory.push_back(t);
 
+        double total_mem_size =t.finish_address;
+
         // allocating new processes
-        double start = memory.size() - holes_total_size;
+        double start = start_new;
         if(process_total_size < holes_total_size)
         {
             total_memory.pop_back();
@@ -737,20 +769,23 @@ vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Seg
                 temp_pro.size = process[i].size;
                 temp_pro.starting_address = start;
                 temp_pro.finish_address = temp_pro.starting_address + temp_pro.size;
+                temp_pro.id = pro_id;
                 temp_pro.type = 0;
                 total_memory.push_back(temp_pro);
                 start = start + temp_pro.size;
             }
-            holes_total_size = memory.size() - start;
+            holes_total_size = total_mem_size - start;
             if(holes_total_size > 0)
             {
                     h.name = "Hole";
                     h.size = holes_total_size;
-                    h.starting_address = memory.size() - holes_total_size;
-                    h.finish_address = memory.size();
+                    h.starting_address = total_mem_size - holes_total_size;
+                    h.finish_address = total_mem_size;
+                    h.id = 0;
                     h.type = 1;
                     total_memory.push_back(h);
             }
+            pro_id++;
         }
         else if(process_total_size == holes_total_size)
         {
@@ -761,20 +796,18 @@ vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Seg
                 temp_pro.size = process[i].size;
                 temp_pro.starting_address = start;
                 temp_pro.finish_address = temp_pro.starting_address + temp_pro.size;
+                temp_pro.id = pro_id;
                 temp_pro.type = 0;
                 total_memory.push_back(temp_pro);
                 start = start + temp_pro.size;
             }
-            holes_total_size = memory.size() - start;
+            holes_total_size = total_mem_size - start;
+            pro_id++;
         }
         else if(process_total_size > holes_total_size)
         {
            QMessageBox::warning(this, "Wrong Input", " this process does not fit");
         }
-
-        for(int i=0 ; i<total_memory.size(); i++)
-        {
-            total_memory[i].id = i;
-        }
+        memory = total_memory;
         return total_memory;
 }
