@@ -543,7 +543,7 @@ void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> pr
                 //int idx = 0;
                 for (int i = 0; i < holes.size(); i++) {
                     for (int j=0; j < temp_memory.size(); j++) {
-                    if (holes[i].id == temp_memory[j].id && temp_memory[i].type == 1) {
+                    if (holes[i].id == temp_memory[j].id && temp_memory[j].type == 1) {
                         temp_memory[j].id = i;
                     }
                     }
