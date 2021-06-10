@@ -253,11 +253,17 @@ void MainWindow::add_hole_button_clicked() {
     //add_holes_button->setText("Add new hole");
     new_row++;
     holes_table->insertRow(new_row);
+    if (holes_table->rowCount() > 0) {
+        remove_hole_button->show();
+    }
 }
 
 void MainWindow::remove_hole_button_clicked() {
     holes_table->removeRow(holes_table->rowCount() - 1);
     new_row--;
+    if (holes_table->rowCount() == 0){
+        remove_hole_button->hide();
+    }
 }
 
 void MainWindow::enter_segments_button_clicked() {
@@ -393,34 +399,34 @@ void MainWindow::dellocate_process_button_clicked() {
 
 void MainWindow::manage_holes(vector<Segment>& holes) {
     for (int i = 0; i < holes.size(); i++) {
-            holes[i].id = i;
-            for (int j = i + 1; j < holes.size(); j++) {
-                if (holes[j].starting_address < holes[i].starting_address && holes[j].size >= holes[i].starting_address) {
-                    if (holes[i].finish_address < holes[j].finish_address) {
-                        holes[i].finish_address = holes[j].finish_address;
-                        holes[i].size = holes[i].finish_address - holes[i].starting_address;
-                    }
-                    if (holes[i].starting_address > holes[j].starting_address) {
-                        holes[i].starting_address = holes[j].starting_address;
-                        holes[i].size += holes[j].size;
-                    }
-                    holes.erase(holes.begin() + j);
-                    j--;
-                }
-                else if (holes[j].starting_address == holes[i].finish_address) {
+        holes[i].id = i;
+        for (int j = i + 1; j < holes.size(); j++) {
+            if (holes[j].starting_address < holes[i].starting_address && holes[j].size >= holes[i].starting_address) {
+                if (holes[i].finish_address < holes[j].finish_address) {
                     holes[i].finish_address = holes[j].finish_address;
                     holes[i].size = holes[i].finish_address - holes[i].starting_address;
-                    holes.erase(holes.begin() + j);
-                    j--;
                 }
-                else if (holes[j].starting_address <= holes[i].finish_address) {
-                    if (holes[j].finish_address > holes[i].finish_address)
-                        holes[i].finish_address = holes[j].finish_address;
-                    holes.erase(holes.begin() + j);
-                    j--;
+                if (holes[i].starting_address > holes[j].starting_address) {
+                    holes[i].starting_address = holes[j].starting_address;
+                    holes[i].size += holes[j].size;
                 }
+                holes.erase(holes.begin() + j);
+                j--;
+            }
+            else if (holes[j].starting_address == holes[i].finish_address) {
+                holes[i].finish_address = holes[j].finish_address;
+                holes[i].size = holes[i].finish_address - holes[i].starting_address;
+                holes.erase(holes.begin() + j);
+                j--;
+            }
+            else if (holes[j].starting_address <= holes[i].finish_address) {
+                if (holes[j].finish_address > holes[i].finish_address)
+                    holes[i].finish_address = holes[j].finish_address;
+                holes.erase(holes.begin() + j);
+                j--;
             }
         }
+    }
 }
 
 void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int finishOfMemory) {
@@ -484,50 +490,50 @@ void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int
 
 void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> process, vector<Segment> &holes){
     Segment temp_hole;
-        vector<Segment> temp_memory;
-        temp_memory = memory;
-        int hole_index;
-        for (int i = 0; i < process.size(); i++) {
-            for (int j = 0; j < temp_memory.size(); j++) {
-                if (process[i].size < temp_memory[j].size && temp_memory[j].type == 1) {
-                    process[i].starting_address = temp_memory[j].starting_address;
-                    process[i].finish_address = process[i].starting_address + process[i].size;
-                    temp_hole = temp_memory[j];
-                    //take index of the hole vector
-                    hole_index = temp_memory[j].id;
+    vector<Segment> temp_memory;
+    temp_memory = memory;
+    int hole_index;
+    for (int i = 0; i < process.size(); i++) {
+        for (int j = 0; j < temp_memory.size(); j++) {
+            if (process[i].size < temp_memory[j].size && temp_memory[j].type == 1) {
+                process[i].starting_address = temp_memory[j].starting_address;
+                process[i].finish_address = process[i].starting_address + process[i].size;
+                temp_hole = temp_memory[j];
+                //take index of the hole vector
+                hole_index = temp_memory[j].id;
 
-                    temp_memory.erase(temp_memory.begin() + j);
-                    temp_memory.insert(temp_memory.begin() + j, process[i]);
-                    process[i].is_fit_in_memory = true;
-                    temp_hole.starting_address = process[i].finish_address;
-                    temp_hole.size = temp_hole.finish_address - temp_hole.starting_address;
-                    //edit in the holes vector
-                    holes[hole_index] = temp_hole;
+                temp_memory.erase(temp_memory.begin() + j);
+                temp_memory.insert(temp_memory.begin() + j, process[i]);
+                process[i].is_fit_in_memory = true;
+                temp_hole.starting_address = process[i].finish_address;
+                temp_hole.size = temp_hole.finish_address - temp_hole.starting_address;
+                //edit in the holes vector
+                holes[hole_index] = temp_hole;
 
-                    temp_memory.insert(temp_memory.begin() + j + 1, temp_hole);
-                    break;
-                }
-                else if (process[i].size == temp_memory[j].size && temp_memory[j].type == 1) {
-                    process[i].starting_address = temp_memory[j].starting_address;
-                    process[i].finish_address = process[i].starting_address + process[i].size;
-                    //edit in the holes vector
-                    hole_index = temp_memory[j].id;
-                    holes.erase(holes.begin() + hole_index);
+                temp_memory.insert(temp_memory.begin() + j + 1, temp_hole);
+                break;
+            }
+            else if (process[i].size == temp_memory[j].size && temp_memory[j].type == 1) {
+                process[i].starting_address = temp_memory[j].starting_address;
+                process[i].finish_address = process[i].starting_address + process[i].size;
+                //edit in the holes vector
+                hole_index = temp_memory[j].id;
+                holes.erase(holes.begin() + hole_index);
 
-                    temp_memory.erase(temp_memory.begin() + j);
-                    temp_memory.insert(temp_memory.begin() + j, process[i]);
-                    process[i].is_fit_in_memory = true;
-                    break;
-                }
+                temp_memory.erase(temp_memory.begin() + j);
+                temp_memory.insert(temp_memory.begin() + j, process[i]);
+                process[i].is_fit_in_memory = true;
+                break;
             }
         }
-        for (int i = 0; i < process.size(); i++) {
-            if (!process[i].is_fit_in_memory) {
-                QMessageBox::warning(this, "Wrong Input", " this process does not fit");
-                return;
-            }
+    }
+    for (int i = 0; i < process.size(); i++) {
+        if (!process[i].is_fit_in_memory) {
+            QMessageBox::warning(this, "Wrong Input", " this process does not fit");
+            return;
         }
-        memory = temp_memory;
+    }
+    memory = temp_memory;
 }
 
 
