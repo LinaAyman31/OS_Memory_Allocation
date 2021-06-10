@@ -508,6 +508,7 @@ void MainWindow::fill_memory(vector<Segment>& memory, vector<Segment> holes, int
     }
 }
 
+
 void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> process, vector<Segment> &holes){
     Segment temp_hole;
     vector<Segment> temp_memory;
@@ -539,6 +540,14 @@ void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> pr
                 //edit in the holes vector
                 hole_index = temp_memory[j].id;
                 holes.erase(holes.begin() + hole_index);
+                //int idx = 0;
+                for (int i = 0; i < holes.size(); i++) {
+                    for (int j=0; j < temp_memory.size(); j++) {
+                    if (holes[i].id == temp_memory[j].id && temp_memory[i].type == 1) {
+                        temp_memory[j].id = i;
+                    }
+                    }
+                }
 
                 temp_memory.erase(temp_memory.begin() + j);
                 temp_memory.insert(temp_memory.begin() + j, process[i]);
