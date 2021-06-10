@@ -45,7 +45,7 @@ public:
     vector <Segment> best_fit_algorithm(vector <Segment> &holes, vector <Segment> &old_memory, vector <Segment> &process);
     void first_fit_algorithm(std::vector<Segment> &memory, std::vector<Segment> process, std::vector<Segment> &holes);
     void worst_fit_algorithm(vector<Segment> procces,vector<Segment> &holes, vector<Segment> &all);
-    vector <Segment> shuffle_algorithm(vector<Segment> memory, vector<Segment> process);
+    vector <Segment> shuffle_algorithm(vector<Segment> &memory, vector<Segment> process);
     void manage_holes(std::vector<Segment>& holes);
     void fill_memory(vector<Segment>& memory, vector<Segment> holes, int finishOfMemory);
     void draw_memory(vector<Segment> memory);

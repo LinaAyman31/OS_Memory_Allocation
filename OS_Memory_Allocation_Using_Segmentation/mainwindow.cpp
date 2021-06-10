@@ -639,44 +639,62 @@ void MainWindow::worst_fit_algorithm (vector<Segment> procces,vector<Segment> &h
          }
      }
 
-vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Segment> process){
+vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> &memory, vector<Segment> process){
     double holes_total_size = 0, process_total_size = 0;
+    double start_old = memory[0].starting_address;
         vector<Segment> total_memory;
         Segment h, p, pro, temp_pro, arr_h, t;
 
-        for(int i=0 ; i<memory.size(); i++)
+        for (int i = 0; i < memory.size(); i++)
         {
-
-            if(process[i].type == 0)
-            {
-                process_total_size += process[i].size;
+            for (int j = i + 1; j < memory.size(); j++) {
+                if (memory[i].starting_address > memory[j].starting_address) {
+                    swap(memory[i], memory[j]);
+                }
             }
+        }
+
+        for(int i=0 ; i<process.size(); i++)
+        {
+                process_total_size += process[i].size;
         }
 
         for(int i=0; i<memory.size(); i++)
         {
             if(memory[i].type == 2)
             {
-                t.starting_address = memory[i].starting_address;
+                t.starting_address = start_old;
                 t.size = memory[i].size;
-                t.finish_address = memory[i].finish_address;
+                t.finish_address = t.starting_address + t.size;
                 t.type = memory[i].type;
                 t.name = memory[i].name;
+                t.id = memory[i].id;
                 total_memory.push_back(t);
+                start_old = t.finish_address;
             }
         }
+        double start_new = start_old, pro_id = 0, flag = 0;
         for(int i=0; i<memory.size(); i++)
         {
             if(memory[i].type == 0)
             {
-                t.starting_address = memory[i].starting_address;
+                flag = 1;
+                t.starting_address = start_new;
                 t.size = memory[i].size;
-                t.finish_address = memory[i].finish_address;
+                t.finish_address = t.starting_address + t.size;
                 t.type = memory[i].type;
                 t.name = memory[i].name;
+                t.id = memory[i].id;
                 total_memory.push_back(t);
+                start_new = t.finish_address;
+                pro_id = t.id;
             }
         }
+        if(flag == 1)
+        {
+            pro_id++;
+        }
+
         for(int i=0; i<memory.size(); i++)
         {
             if(memory[i].type == 1)
@@ -684,15 +702,18 @@ vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Seg
                 holes_total_size += memory[i].size;
             }
         }
-        t.starting_address = memory.size() - holes_total_size;
+        t.starting_address = start_new;
         t.size = holes_total_size;
-        t.finish_address = memory.size();
+        t.finish_address = t.starting_address + t.size;
         t.type = 1;
         t.name = "Hole";
+        t.id = 0;
         total_memory.push_back(t);
 
+        double total_mem_size =t.finish_address;
+
         // allocating new processes
-        double start = memory.size() - holes_total_size;
+        double start = start_new;
         if(process_total_size < holes_total_size)
         {
             total_memory.pop_back();
@@ -702,20 +723,23 @@ vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Seg
                 temp_pro.size = process[i].size;
                 temp_pro.starting_address = start;
                 temp_pro.finish_address = temp_pro.starting_address + temp_pro.size;
+                temp_pro.id = pro_id;
                 temp_pro.type = 0;
                 total_memory.push_back(temp_pro);
                 start = start + temp_pro.size;
             }
-            holes_total_size = memory.size() - start;
+            holes_total_size = total_mem_size - start;
             if(holes_total_size > 0)
             {
                     h.name = "Hole";
                     h.size = holes_total_size;
-                    h.starting_address = memory.size() - holes_total_size;
-                    h.finish_address = memory.size();
+                    h.starting_address = total_mem_size - holes_total_size;
+                    h.finish_address = total_mem_size;
+                    h.id = 0;
                     h.type = 1;
                     total_memory.push_back(h);
             }
+            pro_id++;
         }
         else if(process_total_size == holes_total_size)
         {
@@ -726,20 +750,18 @@ vector<Segment> MainWindow::shuffle_algorithm(vector<Segment> memory, vector<Seg
                 temp_pro.size = process[i].size;
                 temp_pro.starting_address = start;
                 temp_pro.finish_address = temp_pro.starting_address + temp_pro.size;
+                temp_pro.id = pro_id;
                 temp_pro.type = 0;
                 total_memory.push_back(temp_pro);
                 start = start + temp_pro.size;
             }
-            holes_total_size = memory.size() - start;
+            holes_total_size = total_mem_size - start;
+            pro_id++;
         }
         else if(process_total_size > holes_total_size)
         {
            QMessageBox::warning(this, "Wrong Input", " this process does not fit");
         }
-
-        for(int i=0 ; i<total_memory.size(); i++)
-        {
-            total_memory[i].id = i;
-        }
+        memory = total_memory;
         return total_memory;
 }
