@@ -54,6 +54,7 @@ public:
 private slots:
     void submit_holes_button_clicked();
     void add_hole_button_clicked();
+    void remove_hole_button_clicked();
     void enter_segments_button_clicked();
     void allocate_process_button_clicked();
     void dellocate_process_button_clicked();
@@ -64,6 +65,7 @@ private:
     QLabel *label_for_memory_size;
     //QPushButton *push_button_for_memory_size;
     QPushButton *add_holes_button;
+    QPushButton *remove_hole_button;
     QTableWidget *holes_table;
     QPushButton *submit_holes;
     QLabel *label_for_number_of_segments;

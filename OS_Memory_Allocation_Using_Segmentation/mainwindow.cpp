@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *left_layout = new QVBoxLayout;
     QVBoxLayout *right_layout = new QVBoxLayout;
     QHBoxLayout *layout_for_memory_size = new QHBoxLayout;
+    QHBoxLayout *layout_for_add_remove_hole = new QHBoxLayout;
     QVBoxLayout *holes_layout = new QVBoxLayout;
     QVBoxLayout *process_layout = new QVBoxLayout;
     QHBoxLayout *segments_layout = new QHBoxLayout;
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     label_for_memory_size = new QLabel;
     //push_button_for_memory_size = new QPushButton;
     add_holes_button = new QPushButton;
+    remove_hole_button = new QPushButton;
     holes_table = new QTableWidget;
     QStringList vertical_holes_labels;
     QStringList horizontal_holes_labels;
@@ -66,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     label_for_memory_size->setText("Enter total size of memory: ");
     //push_button_for_memory_size->setText("Enter");
     add_holes_button->setText("Add new hole");
+    remove_hole_button->setText("Clear hole");
     holes_table->setColumnCount(2);
     holes_table->setRowCount(1);
     horizontal_holes_labels << "Starting Address" << "Size";
@@ -103,7 +106,9 @@ MainWindow::MainWindow(QWidget *parent)
     layout_for_memory_size->addWidget(label_for_memory_size);
     layout_for_memory_size->addWidget(lineEdit_for_memory_size);
    // layout_for_memory_size->addWidget(push_button_for_memory_size);
-    holes_layout->addWidget(add_holes_button);
+    layout_for_add_remove_hole->addWidget(add_holes_button);
+    layout_for_add_remove_hole->addWidget(remove_hole_button);
+    holes_layout->addLayout(layout_for_add_remove_hole);
     holes_layout->addWidget(holes_table);
     holes_layout->addWidget(submit_holes);
     segments_layout->addWidget(label_for_number_of_segments);
@@ -147,6 +152,7 @@ MainWindow::~MainWindow()
 void MainWindow::connect_buttons_function() {
     connect(submit_holes, SIGNAL(clicked()), this, SLOT(submit_holes_button_clicked()));
     connect(add_holes_button, SIGNAL(clicked()), this, SLOT(add_hole_button_clicked()));
+    connect(remove_hole_button, SIGNAL(clicked()), this, SLOT(remove_hole_button_clicked()));
     connect(enter_segments, SIGNAL(clicked()), this, SLOT(enter_segments_button_clicked()));
     connect(allocate_button, SIGNAL(clicked()), this, SLOT(allocate_process_button_clicked()));
     connect(dellocate_button, SIGNAL(clicked()), this, SLOT(dellocate_process_button_clicked()));
@@ -236,6 +242,11 @@ void MainWindow::add_hole_button_clicked() {
     //add_holes_button->setText("Add new hole");
     new_row++;
     holes_table->insertRow(new_row);
+}
+
+void MainWindow::remove_hole_button_clicked() {
+    holes_table->removeRow(holes_table->rowCount() - 1);
+    new_row--;
 }
 
 void MainWindow::enter_segments_button_clicked() {
