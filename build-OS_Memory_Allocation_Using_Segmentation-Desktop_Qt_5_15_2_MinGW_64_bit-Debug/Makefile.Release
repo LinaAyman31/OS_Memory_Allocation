@@ -246,6 +246,15 @@ release/moc_mainwindow.cpp: ../OS_Memory_Allocation_Using_Segmentation/mainwindo
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qrubberband.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QRadioButton \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qradiobutton.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsScene \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsscene.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsView \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsview.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainter.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qscrollarea.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsRectItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsitem.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainterpath.h \
 		release/moc_predefs.h \
 		C:/Qt/5.15.2/mingw81_64/bin/moc.exe
 	C:\Qt\5.15.2\mingw81_64\bin\moc.exe $(DEFINES) --include C:/Users/Dell/Documents/GitHub/OS_Memory_Allocation/build-OS_Memory_Allocation_Using_Segmentation-Desktop_Qt_5_15_2_MinGW_64_bit-Debug/release/moc_predefs.h -IC:/Qt/5.15.2/mingw81_64/mkspecs/win32-g++ -IC:/Users/Dell/Documents/GitHub/OS_Memory_Allocation/OS_Memory_Allocation_Using_Segmentation -IC:/Qt/5.15.2/mingw81_64/include -IC:/Qt/5.15.2/mingw81_64/include/QtWidgets -IC:/Qt/5.15.2/mingw81_64/include/QtGui -IC:/Qt/5.15.2/mingw81_64/include/QtANGLE -IC:/Qt/5.15.2/mingw81_64/include/QtCore -I. -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++ -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed -IC:/Qt/Tools/mingw810_64/x86_64-w64-mingw32/include ..\OS_Memory_Allocation_Using_Segmentation\mainwindow.h -o release\moc_mainwindow.cpp
@@ -411,6 +420,15 @@ release/main.o: ../OS_Memory_Allocation_Using_Segmentation/main.cpp ../OS_Memory
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qrubberband.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QRadioButton \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qradiobutton.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsScene \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsscene.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsView \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsview.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainter.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qscrollarea.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsRectItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsitem.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainterpath.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qapplication.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qcoreapplication.h \
@@ -558,6 +576,15 @@ release/mainwindow.o: ../OS_Memory_Allocation_Using_Segmentation/mainwindow.cpp 
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qrubberband.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QRadioButton \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qradiobutton.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsScene \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsscene.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsView \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsview.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainter.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qscrollarea.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsRectItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsitem.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainterpath.h \
 		ui_mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVariant \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
@@ -777,8 +804,6 @@ release/mainwindow.o: ../OS_Memory_Allocation_Using_Segmentation/mainwindow.cpp 
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpagelayout.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpagesize.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpaintengine.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainter.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpainterpath.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpdfwriter.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpicture.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpictureformatplugin.h \
@@ -835,7 +860,6 @@ release/mainwindow.o: ../OS_Memory_Allocation_Using_Segmentation/mainwindow.cpp 
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgesture.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgesturerecognizer.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsanchorlayout.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsitem.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicslayout.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicslayoutitem.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicseffect.h \
@@ -844,12 +868,9 @@ release/mainwindow.o: ../OS_Memory_Allocation_Using_Segmentation/mainwindow.cpp 
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicslinearlayout.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsproxywidget.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicswidget.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsscene.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicssceneevent.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicstransform.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/QVector3D \
-		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgraphicsview.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qscrollarea.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgroupbox.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qheaderview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qinputdialog.h \
@@ -904,7 +925,11 @@ release/mainwindow.o: ../OS_Memory_Allocation_Using_Segmentation/mainwindow.cpp 
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qwidgetaction.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qwizard.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qtwidgetsversion.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QMessageBox
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QMessageBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsSimpleTextItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsTextItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/QColor \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\OS_Memory_Allocation_Using_Segmentation\mainwindow.cpp
 
 release/moc_mainwindow.o: release/moc_mainwindow.cpp 
