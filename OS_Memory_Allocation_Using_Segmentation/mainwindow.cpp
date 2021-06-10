@@ -5,7 +5,7 @@
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsTextItem>
 #include <QColor>
-
+#include <QDebug>
 int new_row = 0;
 int process_no =0;
 int holes_total_size=0;
@@ -503,7 +503,6 @@ public:
     }
 };
 
-
 vector<Segment> total_memory(vector <Segment>const &holes_after_allocation, vector <Segment>const &old_memory, vector <Segment>const &allocated)
 {
     priority_queue<Segment, vector<Segment>, compare2> memory;
@@ -554,7 +553,7 @@ vector<Segment> MainWindow::best_fit_algorithm(vector <Segment> &holes, vector <
         top_x = x.top();
         if (top_y.size <=top_x.size)
         {
-            allocated.push_back(Segment{top_y.id ,top_y.name ,top_x.starting_address ,top_y.size ,top_y.type});
+            allocated.push_back(Segment{top_y.id ,top_y.name ,top_x.starting_address ,top_x.starting_address+top_y.size,top_y.size ,top_y.type});
             x.pop();
             y.pop();
             top_x.size -= top_y.size;
