@@ -161,7 +161,7 @@ void MainWindow::draw_memory(vector<Segment> memory) {
     rectangle=draw_scene->addRect(-200,0,Rectangle_Width,Rectangle_Height*memory[0].size,blackpen, color_brush);
     QString start_address = QString::number(memory[0].starting_address);
     QGraphicsTextItem *txtitem = new QGraphicsTextItem(start_address);
-    txtitem->setPos(QPointF(-240, -13));
+    txtitem->setPos(QPointF(-230, -13));
     draw_scene->addItem(txtitem);
     QString finish_address = QString::number(memory[0].finish_address);
     QGraphicsTextItem *txtitem_2 = new QGraphicsTextItem(finish_address);
@@ -201,6 +201,7 @@ void MainWindow::draw_memory(vector<Segment> memory) {
 }
 
 void MainWindow::submit_holes_button_clicked() {
+    submit_holes->hide();
     QString memory_size = lineEdit_for_memory_size ->text();
     if(memory_size.toInt()<=0){
         QMessageBox::warning(this, "Wrong Input", "Please enter positive number");
@@ -262,29 +263,46 @@ void MainWindow::allocate_process_button_clicked() {
         p.id =process_no;
         process.push_back(p);
     }
-    if(p_size> holes_total_size){
+    if(p_size > holes_total_size){
         QMessageBox::warning(this, "Wrong Input", " this process does not fit");
     }
-    process_no ++;
+    process_no++;
     if(first_fit->isChecked())
     {
         first_fit_algorithm(memory,process,holes);
+        manage_holes_id(memory);
+        draw_scene->clear();
+        view->items().clear();
         draw_memory(memory);
     }
     else if (best_fit->isChecked())
     {
        memory = best_fit_algorithm(holes,memory,process);
+       manage_holes_id(memory);
+       draw_scene->clear();
+       view->items().clear();
        draw_memory(memory);
     }
     else if (worst_fit->isChecked())
     {
         worst_fit_algorithm(process,holes,memory);
+        manage_holes_id(memory);
+        draw_scene->clear();
+        view->items().clear();
         draw_memory(memory);
     }
     else if (shuffle->isChecked())
     {
         memory = shuffle_algorithm(memory,process);
+        manage_holes_id(memory);
+        draw_scene->clear();
+        view->items().clear();
         draw_memory(memory);
+    }
+    else
+        QMessageBox::warning(this, "Wrong Input", " Please choose a method.");
+    while(!process.empty()) {
+        process.pop_back();
     }
 }
 
@@ -298,11 +316,12 @@ void MainWindow::manage_holes_id(vector<Segment> &memory) {
            i--;
         }
     }
-
+    holes_total_size = 0;
     for (int i = 0; i < memory.size(); i++) {
         if (memory[i].type == 1) {
             memory[i].id = hole_id;
             hole_id++;
+            holes_total_size += memory[i].size;
         }
     }
 }
@@ -332,12 +351,16 @@ void MainWindow::dellocate_process_button_clicked() {
         type = 2;
         deAllocate(holes, memory, type, id);
         manage_holes_id(memory);
+        draw_scene->clear();
+        view->items().clear();
         draw_memory(memory);
     }
     else if (new_process->isChecked()) {
         type = 0;
         deAllocate(holes, memory, type, id);
         manage_holes_id(memory);
+        draw_scene->clear();
+        view->items().clear();
         draw_memory(memory);
     }
     else
@@ -481,7 +504,6 @@ void MainWindow::first_fit_algorithm(vector<Segment> &memory, vector<Segment> pr
             }
         }
         memory = temp_memory;
-        manage_holes_id(memory);
 }
 
 
